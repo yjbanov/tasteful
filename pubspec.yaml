@@ -1,5 +1,8 @@
 name: tasteful
 description: a different take on stateful widgets.
+homepage: https://github.com/yjbanov/tasteful
+authors:
+  - Yegor Jbanov <yjbanov@google.com>
 
 version: 0.0.1
 

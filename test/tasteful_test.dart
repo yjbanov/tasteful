@@ -5,7 +5,7 @@ import 'package:tasteful/tasteful.dart';
 void main() {
   testWidgets('Tasteful', (WidgetTester tester) async {
     // Initial build, with initial state.
-    await tester.pumpWidget(_Counter('Hello'));
+    await tester.pumpWidget(Counter('Hello'));
     expect(find.text('Hello, 0!'), findsOneWidget);
 
     // Change state independently from the widget.
@@ -14,13 +14,13 @@ void main() {
     expect(find.text('Hello, 1!'), findsOneWidget);
 
     // Update widget independently from state.
-    await tester.pumpWidget(_Counter('Bonjour'));
+    await tester.pumpWidget(Counter('Bonjour'));
     expect(find.text('Bonjour, 1!'), findsOneWidget);
   });
 }
 
-class _Counter extends TastefulWidget<int> {
-  _Counter(this.greeting);
+class Counter extends TastefulWidget<int> {
+  Counter(this.greeting);
 
   final String greeting;
 
