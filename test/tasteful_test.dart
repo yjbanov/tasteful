@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stateful/stateful.dart';
+import 'package:tasteful/tasteful.dart';
 
 void main() {
-  testWidgets('Stateful', (WidgetTester tester) async {
+  testWidgets('Tasteful', (WidgetTester tester) async {
     // Initial build, with initial state.
     await tester.pumpWidget(_Counter('Hello'));
     expect(find.text('Hello, 0!'), findsOneWidget);
@@ -19,7 +19,7 @@ void main() {
   });
 }
 
-class _Counter extends Stateful<int> {
+class _Counter extends TastefulWidget<int> {
   _Counter(this.greeting);
 
   final String greeting;
@@ -27,12 +27,12 @@ class _Counter extends Stateful<int> {
   int createInitialState() => 0;
 
   @override
-  Widget build(StatefulBuildContext context, int state) {
+  Widget build(TastefulBuildContext context) {
     return Boilerplate(Column(children: [
-      Text('$greeting, $state!'),
+      Text('$greeting, ${context.state}!'),
       GestureDetector(
         onTap: () {
-          context.setState(state + 1);
+          context.state = context.state + 1;
         },
         child: Text('Increment'),
       ),
