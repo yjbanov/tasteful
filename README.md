@@ -1,8 +1,8 @@
 # package:tasteful
 
 This Flutter package provides a new kind of stateful widget, `TastefulWidget`.
-It solves a subset of problems that the [StatefulWidget][1] a little more
-elegantly:
+It solves a subset of problems typically solved using [StatefulWidget][1] a
+little more elegantly:
 
 - `TastefulWidget` does not require a second [State][2] class. Instead it can
   operate on an already existing class that can represent your widget's state.
@@ -40,7 +40,7 @@ class Counter extends TastefulWidget<int> {
 ## When to use `TastefulWidget`
 
 - When you prefer your state objects to be immutable and that's sufficient to
-  express you app's UI logic.
+  express your app's UI logic.
 - When a class already exists that fully represents your widget's state, and
   creating a second wrapper class would be wasteful.
 
