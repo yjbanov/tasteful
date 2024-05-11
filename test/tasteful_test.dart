@@ -24,6 +24,7 @@ class Counter extends TastefulWidget<int> {
 
   final String greeting;
 
+  @override
   int createInitialState() => 0;
 
   @override

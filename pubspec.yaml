@@ -4,10 +4,10 @@ homepage: https://github.com/yjbanov/tasteful
 authors:
   - Yegor Jbanov <yjbanov@google.com>
 
-version: 0.0.1
+version: 0.0.2
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -16,6 +16,3 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-flutter:
-  uses-material-design: true
