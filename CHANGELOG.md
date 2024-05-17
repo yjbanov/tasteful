@@ -1,3 +1,8 @@
+# 0.0.3
+
+- Add example.
+- Update readme.
+
 # 0.0.2
 
 - Make the package null safe.

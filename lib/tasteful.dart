@@ -17,7 +17,7 @@ import 'package:flutter/widgets.dart';
 /// value is not equal to the old value. State values are compared
 /// using the `==` operator.
 abstract class TastefulWidget<S> extends Widget {
-  TastefulWidget({super.key});
+  const TastefulWidget({super.key});
 
   /// Creates the initial state value.
   @protected

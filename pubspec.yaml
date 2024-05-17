@@ -2,7 +2,7 @@ name: tasteful
 description: a different take on stateful widgets.
 homepage: https://github.com/yjbanov/tasteful
 
-version: 0.0.2
+version: 0.0.3
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
