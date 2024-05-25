@@ -1,3 +1,8 @@
+# 0.0.4
+
+- Add support for `State` and all state lifecycle and mixins.
+- Add many more examples.
+
 # 0.0.3
 
 - Add example.
