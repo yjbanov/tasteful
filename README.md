@@ -79,7 +79,7 @@ class Counter extends TastefulWidget<int> {
   final String title;
 
   @override
-  int createInitialState() => 0;
+  int createData() => 0;
 
   @override
   Widget build(TastefulBuildContext context) {
@@ -125,7 +125,7 @@ Compared to the stateless version there are three differences:
 
 - The widget extends `TastefulWidget<int>` to declare what type is used to hold
   the state information. In this simple case, it's just an `int`.
-- The widget overrides the `createInitialState()` method that initializes the
+- The widget overrides the `createData()` method that initializes the
   state to zero.
 - The body of the `build` method uses `context.state` to read and display the
   value, and update it in the `onPressed` callback.

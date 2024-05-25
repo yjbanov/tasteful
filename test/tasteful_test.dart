@@ -25,15 +25,15 @@ class Counter extends TastefulWidget<int> {
   final String greeting;
 
   @override
-  int createInitialState() => 0;
+  int createData() => 0;
 
   @override
   Widget build(TastefulBuildContext context) {
     return Boilerplate(Column(children: [
-      Text('$greeting, ${context.state}!'),
+      Text('$greeting, ${context.data}!'),
       GestureDetector(
         onTap: () {
-          context.state = context.state + 1;
+          context.data = context.data + 1;
         },
         child: Text('Increment'),
       ),
