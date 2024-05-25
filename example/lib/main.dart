@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tasteful/tasteful.dart';
 
 import 'counter_advanced.dart';
+import 'counter_dataless.dart';
 import 'counter_stateful.dart';
 import 'counter_stateless.dart';
 
@@ -41,6 +42,7 @@ class Demos extends TastefulWidget<String> {
       'stateless' => CounterStateless(title: 'Stateless Counter'),
       'stateful' => CounterStateful(title: 'Stateful Counter'),
       'advanced' => CounterAdvanced(title: 'Advanced Counter'),
+      'dataless' => CounterDataless(title: 'Dataless Stateful Counter'),
       _ => throw StateError('This should never happen'),
     };
   }
@@ -72,6 +74,12 @@ class Demos extends TastefulWidget<String> {
                 context.data = 'advanced';
               },
               child: Text('Advanced Counter'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.data = 'dataless';
+              },
+              child: Text('Dataless Stateful Counter'),
             ),
           ],
         ),

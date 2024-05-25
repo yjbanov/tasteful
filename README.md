@@ -15,7 +15,9 @@ a subset of problems typically solved using [StatelessWidget][] and
 - The widget does not need to change its type when switching between stateless
   and stateful modes.
 
-## Example
+## Examples
+
+### Stateless widget
 
 This example rewrites the classic counter app using `TastefulWidget`. To show
 how easy it is to move between stateless and stateful, first a complete and
@@ -62,11 +64,13 @@ class Counter extends TastefulWidget {
 }
 ```
 
-This widget contains all the UI, but the "Increment" button does nothing useful,
-and the counter is hard-coded to always say "0". To make the counter actually
-count clicks we are going to add state to it. The data that stores the state is
-an `int` that counts how many times the button was pressed. The initial value
-needs to be set to zero. The `onPressed` callback of the button needs to
+### Simple stateful widget
+
+The stateless variant of widget contains all the UI, but the "Increment" button
+does nothing useful, and the counter is hard-coded to always say "0". To make
+the counter actually count clicks we are going to add stateful data to it. The
+data is an `int` that counts how many times the button was pressed. The initial
+value needs to be set to zero. The `onPressed` callback of the button needs to
 increment the value and notify the framework that the widget needs to be
 updated.
 
@@ -96,7 +100,7 @@ class Counter extends TastefulWidget<int> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '${context.state}',
+              '${context.data}',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
@@ -104,7 +108,7 @@ class Counter extends TastefulWidget<int> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.state++;
+          context.data++;
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
@@ -114,30 +118,196 @@ class Counter extends TastefulWidget<int> {
 }
 ```
 
-Notice how, unlike the `StatelessWidget`/`StatefulWidget` dichotomy, no extra
-class needed to be created to add state to the widget. The `build` method did
-not need to move anywhere. The reference to `title` is still accessible via
-`this`. Also notice that there's no need to wrapp state updating logic into a
-`setState` with a closure. This is because `context.state` setter automatically
-marks the widget for update.
-
-Compared to the stateless version there are three differences:
+Below are key differences between the stateless and the stateful variants:
 
 - The widget extends `TastefulWidget<int>` to declare what type is used to hold
   the state information. In this simple case, it's just an `int`.
-- The widget overrides the `createData()` method that initializes the
-  state to zero.
-- The body of the `build` method uses `context.state` to read and display the
+- The widget overrides the `createData()` method that initializes the data to
+  zero.
+- The body of the `build` method uses `context.data` to read and display the
   value, and update it in the `onPressed` callback.
 
-## Current limitations
+### Advanced stateful widget
 
-This package is currently very simple and does not support more complex
-scenarios. `StatefulWidget` provides a richer lifecycle API, such as
-`didChangeDependencies`, `didUpdateWidget`, and `dispose`. `TastefulBuildContext`
-is missing a closure-based `setState` method for more complex scenarios, such as
-when instead of replacing the state object, it is mutated internally, and the
-widget needs to be scheduled for update.
+In more advanced cases a widget may require access to lifecycle methods, such as
+`didChangeDependencies`, `didUpdateWidget`, `dispose`. The widget may also need
+access to Flutter's `State` mixins, such as `SingleTickerProviderStateMixin`. In
+that case, a state class can be used. In the example below, the `Counter` widget
+is enhanced to include an animation that forever animates the color of the
+counter text between red and blue colors:
+
+```
+class Counter extends TastefulWidget<int> {
+  const Counter({required this.title});
+
+  final String title;
+
+  @override
+  int createData() => 0;
+
+  @override
+  CounterState createState() => CounterState();
+
+  @override
+  Widget build(TastefulBuildContext context) {
+    final CounterState state = context.state as CounterState;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '${context.data}',
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: state._colorAnimation.value,
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.data++;
+        },
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class CounterState extends TastefulState<int> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Color?> _colorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    )..repeat();
+
+    _colorAnimation = ColorTween(
+      begin: Colors.red,
+      end: Colors.blue,
+    ).animate(_controller);
+    _colorAnimation.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+```
+
+Below are key differences between the stateless and the stateful variants:
+
+- The widget defines a state class `CounterState` that has access to all the
+  lifecycle methods of the `State` class, and implements the animation logic.
+- The widget overrides the `createState()`, that initializes `CounterState`.
+- The `build()` method of the widget is updated to apply the animated color to
+  the text.
+
+### Dataless stateful widget
+
+There's nothing wrong with having both a data object and a state class that
+carry local information that the widget can use to render itself. However, if a
+widget declares a state class, that same class could also carry the count
+information without needing a data object. Here's how the animated counter above
+could be rewritten without a data object:
+
+```
+class Counter extends TastefulWidget {
+  const Counter({required this.title});
+
+  final String title;
+
+  @override
+  CounterState createState() => CounterState();
+
+  @override
+  Widget build(TastefulBuildContext context) {
+    final CounterState state = context.state as CounterState;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '${state.count}',
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: state._colorAnimation.value,
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          state.count++;
+        },
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class CounterState extends TastefulState with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Color?> _colorAnimation;
+
+  int get count => _count;
+  set count(int newCount) {
+    setState(() {
+      _count = newCount;
+    });
+  }
+  int _count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    )..repeat();
+
+    _colorAnimation = ColorTween(
+      begin: Colors.red,
+      end: Colors.blue,
+    ).animate(_controller);
+    _colorAnimation.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+```
 
 [StatelessWidget]: https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
 [StatefulWidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html

@@ -25,7 +25,7 @@ abstract class TastefulWidget<D> extends StatefulWidget {
 
   @override
   State<TastefulWidget> createState() {
-    return TastefulState<D>(createData());
+    return TastefulState<D>();
   }
 
   /// Like [StatelessWidget.build] but receives a [TastefulBuildContext]
@@ -42,11 +42,18 @@ abstract class TastefulWidget<D> extends StatefulWidget {
   }
 }
 
+// TODO: should this do TastefulState<D, W extends TastefulWidget<D>> extends State<W>
+//       or is it going too far with type safety? The most observable part of
+//       the type parameter in State is that `this.widget` gives you a more concrete
+//       widget type to read the properties of the widget from. However, if the
+//       build() method is on the widget class, then all widget properties are
+//       accessible via `this.`, so there's less pressure to have a more concrete
+//       type on the `this.widget`, maybe?
 class TastefulState<D> extends State<TastefulWidget<D>> {
-  TastefulState(this._data);
+  TastefulState();
 
-  D get data => _data!;
-  D? _data;
+  @override
+  TastefulBuildContext<D> get context => super.context as TastefulBuildContext<D>;
 
   @override
   Widget build(final BuildContext context) {
@@ -54,9 +61,6 @@ class TastefulState<D> extends State<TastefulWidget<D>> {
     return widget.build(context);
   }
 }
-
-/// Function that sets a new state.
-typedef SetStateCallback = void Function();
 
 /// [BuildContext] that also manages a [TastefulWidget] widget's state.
 abstract class TastefulBuildContext<D> extends BuildContext {
@@ -78,7 +82,7 @@ abstract class TastefulBuildContext<D> extends BuildContext {
 /// new widget this element and the current state remains the same.
 class TastefulElement<D> extends StatefulElement implements TastefulBuildContext<D> {
   TastefulElement(TastefulWidget<D> widget)
-      : super(widget);
+      : _data = widget.createData(), super(widget);
 
   @override
   TastefulWidget<D> get widget => super.widget as TastefulWidget<D>;
@@ -87,13 +91,14 @@ class TastefulElement<D> extends StatefulElement implements TastefulBuildContext
   TastefulState<D> get state => super.state as TastefulState<D>;
 
   @override
-  D get data => state._data!;
+  D get data => _data!;
+  D? _data;
 
   @override
   set data(D newData) {
-    final D? oldData = state._data;
+    final D? oldData = _data;
     if (oldData != newData) {
-      state._data = newData;
+      _data = newData;
       markNeedsBuild();
     }
   }
@@ -101,6 +106,6 @@ class TastefulElement<D> extends StatefulElement implements TastefulBuildContext
   @override
   void unmount() {
     super.unmount();
-    state._data = null;
+    _data = null;
   }
 }
