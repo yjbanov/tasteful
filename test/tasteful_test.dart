@@ -19,7 +19,7 @@ void main() {
   });
 }
 
-class Counter extends TastefulWidget<int> {
+class Counter extends TastefulWidget<int, VoidState> {
   Counter(this.greeting);
 
   final String greeting;
