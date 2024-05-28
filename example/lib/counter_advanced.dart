@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasteful/tasteful.dart';
 
-class CounterAdvanced extends TastefulWidget<int> {
+class CounterAdvanced extends TastefulWidget<int, CounterState> {
   const CounterAdvanced({required this.title});
 
   final String title;
@@ -13,8 +13,7 @@ class CounterAdvanced extends TastefulWidget<int> {
   CounterState createState() => CounterState();
 
   @override
-  Widget build(TastefulBuildContext context) {
-    final CounterState state = context.state as CounterState;
+  Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -30,7 +29,7 @@ class CounterAdvanced extends TastefulWidget<int> {
             Text(
               '${context.data}',
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: state._colorAnimation.value,
+                color: context.state._colorAnimation.value,
               ),
             ),
           ],
@@ -47,12 +46,14 @@ class CounterAdvanced extends TastefulWidget<int> {
   }
 }
 
-class CounterState extends TastefulState<int> with SingleTickerProviderStateMixin {
+class CounterState extends TastefulState<int, CounterAdvanced> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
 
   @override
   void initState() {
+    widget.title; // test typed widget access
+    data++;  // test typed data access
     super.initState();
     _controller = AnimationController(
       duration: Duration(seconds: 2),

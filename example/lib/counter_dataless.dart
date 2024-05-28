@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasteful/tasteful.dart';
 
-class CounterDataless extends TastefulWidget<void> {
+class CounterDataless extends TastefulWidget<void, CounterState> {
   const CounterDataless({required this.title});
 
   final String title;
@@ -10,8 +10,7 @@ class CounterDataless extends TastefulWidget<void> {
   CounterState createState() => CounterState();
 
   @override
-  Widget build(TastefulBuildContext context) {
-    final CounterState state = context.state as CounterState;
+  Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -25,9 +24,9 @@ class CounterDataless extends TastefulWidget<void> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '${state.count}',
+              '${context.state.count}',
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: state._colorAnimation.value,
+                color: context.state._colorAnimation.value,
               ),
             ),
           ],
@@ -35,7 +34,7 @@ class CounterDataless extends TastefulWidget<void> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          state.count++;
+          context.state.count++;
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
@@ -44,7 +43,7 @@ class CounterDataless extends TastefulWidget<void> {
   }
 }
 
-class CounterState extends TastefulState<void> with SingleTickerProviderStateMixin {
+class CounterState extends TastefulState<void, CounterDataless> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
 

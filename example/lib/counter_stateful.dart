@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasteful/tasteful.dart';
 
-class CounterStateful extends TastefulWidget<int> {
+class CounterStateful extends TastefulWidget<int, VoidState> {
   const CounterStateful({required this.title});
 
   final String title;
@@ -10,7 +10,7 @@ class CounterStateful extends TastefulWidget<int> {
   int createData() => 0;
 
   @override
-  Widget build(TastefulBuildContext context) {
+  Widget build(TastefulBuildContext<int, VoidState> context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Demos extends TastefulWidget<String> {
+class Demos extends TastefulWidget<String, VoidState> {
   const Demos({required this.title});
 
   final String title;
@@ -47,7 +47,7 @@ class Demos extends TastefulWidget<String> {
     };
   }
 
-  Widget _buildHome(TastefulBuildContext<String> context) {
+  Widget _buildHome(TastefulBuildContext<String, VoidState> context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
